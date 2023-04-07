@@ -83,7 +83,7 @@ class CommonPlayerViewController: AVPlayerViewController {
         danMuView.displayArea = Settings.danmuArea.percent
 //        danMuView.enableTopDanmaku = false
         danMuView.enableBottomDanmaku = false
-        danMuView.alpha = 0.5
+        danMuView.alpha = 0.6
     }
 
     override func viewWillDisappear(_ animated: Bool) {

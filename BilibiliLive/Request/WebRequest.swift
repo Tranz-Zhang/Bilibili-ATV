@@ -15,6 +15,10 @@ enum RequestError: Error {
     case decodeFail(message: String)
 }
 
+enum NoCookieSession {
+    static let session = Session(configuration: URLSessionConfiguration.ephemeral)
+}
+
 enum WebRequest {
     enum EndPoint {
         static let related = "https://api.bilibili.com/x/web-interface/archive/related"
@@ -23,7 +27,7 @@ enum WebRequest {
         static let fav = "https://api.bilibili.com/x/v3/fav/resource/list"
         static let favList = "https://api.bilibili.com/x/v3/fav/folder/created/list-all"
         static let reportHistory = "https://api.bilibili.com/x/v2/history/report"
-        static let upSpace = "https://api.bilibili.com/x/space/arc/search"
+        static let upSpace = "https://api.bilibili.com/x/space/wbi/arc/search"
         static let like = "https://api.bilibili.com/x/web-interface/archive/like"
         static let likeStatus = "https://api.bilibili.com/x/web-interface/archive/has/like"
         static let coin = "https://api.bilibili.com/x/web-interface/coin/add"
@@ -36,6 +40,7 @@ enum WebRequest {
                             url: URLConvertible,
                             parameters: Parameters = [:],
                             headers: [String: String]? = nil,
+                            noCookie: Bool = false,
                             complete: ((Result<Data, RequestError>) -> Void)? = nil)
     {
         var parameters = parameters
@@ -59,12 +64,19 @@ enum WebRequest {
             afheaders.add(HTTPHeader(name: "Referer", value: "https://www.bilibili.com"))
         }
 
-        AF.request(url,
-                   method: method,
-                   parameters: parameters,
-                   encoding: URLEncoding.default,
-                   headers: afheaders,
-                   interceptor: nil)
+        var session = Session.default
+        if noCookie {
+            session = NoCookieSession.session
+            session.sessionConfiguration.httpShouldSetCookies = false
+        }
+        session.sessionConfiguration.timeoutIntervalForResource = 10
+        session.sessionConfiguration.timeoutIntervalForRequest = 10
+        session.request(url,
+                        method: method,
+                        parameters: parameters,
+                        encoding: URLEncoding.default,
+                        headers: afheaders,
+                        interceptor: nil)
             .responseData { response in
                 switch response.result {
                 case let .success(data):
@@ -81,9 +93,10 @@ enum WebRequest {
                             parameters: Parameters = [:],
                             headers: [String: String]? = nil,
                             dataObj: String = "data",
+                            noCookie: Bool = false,
                             complete: ((Result<JSON, RequestError>) -> Void)? = nil)
     {
-        requestData(method: method, url: url, parameters: parameters, headers: headers) { response in
+        requestData(method: method, url: url, parameters: parameters, headers: headers, noCookie: noCookie) { response in
             switch response {
             case let .success(data):
                 let json = JSON(data)
@@ -109,9 +122,10 @@ enum WebRequest {
                                       headers: [String: String]? = nil,
                                       decoder: JSONDecoder? = nil,
                                       dataObj: String = "data",
+                                      noCookie: Bool = false,
                                       complete: ((Result<T, RequestError>) -> Void)?)
     {
-        requestJSON(method: method, url: url, parameters: parameters, headers: headers, dataObj: dataObj) { response in
+        requestJSON(method: method, url: url, parameters: parameters, headers: headers, dataObj: dataObj, noCookie: noCookie) { response in
             switch response {
             case let .success(data):
                 do {
@@ -145,10 +159,11 @@ enum WebRequest {
                                       parameters: Parameters = [:],
                                       headers: [String: String]? = nil,
                                       decoder: JSONDecoder? = nil,
+                                      noCookie: Bool = false,
                                       dataObj: String = "data") async throws -> T
     {
         return try await withCheckedThrowingContinuation { configure in
-            request(method: method, url: url, parameters: parameters, headers: headers, decoder: decoder, dataObj: dataObj) {
+            request(method: method, url: url, parameters: parameters, headers: headers, decoder: decoder, dataObj: dataObj, noCookie: noCookie) {
                 (res: Result<T, RequestError>) in
                 switch res {
                 case let .success(content):
@@ -312,16 +327,6 @@ extension WebRequest {
         request(url: "http://api.bilibili.com/x/v2/reply", parameters: ["type": 1, "oid": aid, "sort": 1, "nohot": 0]) {
             (result: Result<Replys, RequestError>) in
             if let details = try? result.get() {
-                complete?(details)
-            }
-        }
-    }
-
-    static func requestSearchResult(key: String, page: Int, complete: ((SearchResult) -> Void)?) {
-        request(url: "http://api.bilibili.com/x/web-interface/search/type", parameters: ["search_type": "video", "keyword": key, "page": page]) {
-            (result: Result<SearchResult, RequestError>) in
-            if var details = try? result.get() {
-                details.result.indices.forEach({ details.result[$0].title = details.result[$0].title.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil) })
                 complete?(details)
             }
         }
@@ -705,22 +710,6 @@ struct VideoPlayURLInfo: Codable {
             let audio: DashMediaInfo?
         }
     }
-}
-
-struct SearchResult: Codable, Hashable {
-    struct Result: Codable, Hashable, DisplayData {
-        let author: String
-        let upic: URL
-        let aid: Int
-
-        // DisplayData
-        var title: String
-        var ownerName: String { author }
-        let pic: URL?
-        var avatar: URL? { upic }
-    }
-
-    var result: [Result]
 }
 
 struct SubtitleContent: Codable, Hashable {

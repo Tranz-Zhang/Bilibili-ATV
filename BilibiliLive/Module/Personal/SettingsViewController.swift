@@ -11,9 +11,9 @@ extension FeedDisplayStyle {
     var desp: String {
         switch self {
         case .large:
-            return "3行"
+            return "3个"
         case .normal:
-            return "4行"
+            return "4个"
         case .sideBar:
             return "-"
         }
@@ -35,12 +35,21 @@ class SettingsViewController: UIViewController {
 
     func setupData() {
         cellModels.removeAll()
-        let directlyVideo = CellModel(title: "直接进入视频", desp: Settings.direatlyEnterVideo ? "开" : "关") {
+        let directlyVideo = CellModel(title: "不显示详情页直接进入视频", desp: Settings.direatlyEnterVideo ? "开" : "关") {
             [weak self] in
             Settings.direatlyEnterVideo.toggle()
             self?.setupData()
         }
         cellModels.append(directlyVideo)
+
+        let dlanEnable = CellModel(title: "启用投屏", desp: Settings.enableDLNA ? "开" : "关") {
+            [weak self] in
+            Settings.enableDLNA.toggle()
+            self?.setupData()
+            BiliBiliUpnpDMR.shared.start()
+        }
+        cellModels.append(dlanEnable)
+
         let cancelAction = UIAlertAction(title: nil, style: .cancel)
         let dmStyle = CellModel(title: "弹幕显示区域", desp: Settings.danmuArea.title) { [weak self] in
             let alert = UIAlertController(title: "弹幕显示区域", message: "设置弹幕显示区域", preferredStyle: .actionSheet)
@@ -56,7 +65,7 @@ class SettingsViewController: UIViewController {
         }
         cellModels.append(dmStyle)
 
-        let style = CellModel(title: "时间线显示模式", desp: Settings.displayStyle.desp) { [weak self] in
+        let style = CellModel(title: "视频每行显示个数", desp: Settings.displayStyle.desp) { [weak self] in
             let alert = UIAlertController(title: "显示模式", message: "重启app生效", preferredStyle: .actionSheet)
             for style in FeedDisplayStyle.allCases.filter({ !$0.hideInSetting }) {
                 let action = UIAlertAction(title: style.desp, style: .default) { _ in
@@ -85,7 +94,14 @@ class SettingsViewController: UIViewController {
         }
         cellModels.append(relatedVideoLoadMode)
 
-        let continuePlay = CellModel(title: "继续播放", desp: Settings.continuePlay ? "开" : "关") {
+        let hotWithoutCookie = CellModel(title: "热门个性化推荐", desp: Settings.requestHotWithoutCookie ? "关" : "开") {
+            [weak self] in
+            Settings.requestHotWithoutCookie.toggle()
+            self?.setupData()
+        }
+        cellModels.append(hotWithoutCookie)
+
+        let continuePlay = CellModel(title: "从上次退出的位置继续播放", desp: Settings.continuePlay ? "开" : "关") {
             [weak self] in
             Settings.continuePlay.toggle()
             self?.setupData()
@@ -213,4 +229,14 @@ extension SettingsViewController: UICollectionViewDataSource {
 class SettingsSwitchCell: UICollectionViewCell {
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var descLabel: UILabel!
+
+    override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
+        if isFocused {
+            titleLabel.textColor = UIColor.black
+            descLabel.textColor = UIColor.black
+        } else {
+            titleLabel.textColor = UIColor.white
+            descLabel.textColor = UIColor.white
+        }
+    }
 }

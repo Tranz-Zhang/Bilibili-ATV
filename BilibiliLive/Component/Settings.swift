@@ -60,6 +60,9 @@ enum Settings {
     @UserDefault("DLNA.uuid", defaultValue: "")
     static var uuid: String
 
+    @UserDefault("DLNA.enable", defaultValue: true)
+    static var enableDLNA: Bool
+
     @UserDefault("Settings.continouslyPlay", defaultValue: true)
     static var continouslyPlay: Bool
 
@@ -71,6 +74,9 @@ enum Settings {
 
     @UserDefault("Settings.showRelatedVideoInCurrentVC", defaultValue: true)
     static var showRelatedVideoInCurrentVC: Bool
+
+    @UserDefault("Settings.requestHotWithoutCookie", defaultValue: false)
+    static var requestHotWithoutCookie: Bool
 }
 
 struct MediaQuality {

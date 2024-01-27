@@ -45,7 +45,7 @@ class BilibiliVideoResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelega
     private var httpServer = HttpServer()
     private var aid = 0
     private(set) var httpPort = 0
-
+    private(set) var isHDR = false
     deinit {
         httpServer.stop()
     }
@@ -77,6 +77,9 @@ class BilibiliVideoResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelega
         // hdr 10 formate exp: hev1.2.4.L156.90
         //  Codec.Profile.Flags.TierLevel.Constraints
         let isHDR = isDolby || isHDR10
+        if isHDR {
+            self.isHDR = true
+        }
         var videoRange = isHDR ? "HLG" : "SDR"
         var codecs = info.codecs
         var supplementCodesc = ""
@@ -89,13 +92,17 @@ class BilibiliVideoResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelega
             }
         }
         if codecs == "dvh1.08.07" || codecs == "dvh1.08.03" {
-            supplementCodesc = codecs
-            videoRange = "HLG"
+            supplementCodesc = codecs + "/db4h"
             codecs = "hvc1.2.4.L153.b0"
+            videoRange = "HLG"
         } else if codecs == "dvh1.08.06" {
-            supplementCodesc = codecs
+            supplementCodesc = codecs + "/db1p"
             codecs = "hvc1.2.4.L150"
             videoRange = "PQ"
+        } else if codecs == "dvh1.05.06" {
+            videoRange = "PQ"
+        } else if isHDR {
+            Logger.warn("unknown hdr codecs: \(codecs)")
         }
 
         if let value = Double(framerate), value >= 60 {
@@ -238,9 +245,12 @@ class BilibiliVideoResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelega
         reset()
         hasSubtitle = subtitles.count > 0
         var videos = info.dash.video
-        if Settings.preferHevc {
-            if videos.contains(where: { $0.isHevc }) {
-                videos.removeAll(where: { !$0.isHevc })
+        if Settings.preferAvc {
+            let videosMap = Dictionary(grouping: videos, by: { $0.id })
+            for (key, values) in videosMap {
+                if values.contains(where: { !$0.isHevc }) {
+                    videos.removeAll(where: { $0.id == key && $0.isHevc })
+                }
             }
         }
 

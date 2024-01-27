@@ -7,6 +7,7 @@
 
 import Alamofire
 import Foundation
+import SwiftProtobuf
 import SwiftyJSON
 
 enum RequestError: Error {
@@ -40,6 +41,9 @@ enum WebRequest {
         static let pcgPlayUrl = "https://api.bilibili.com/pgc/player/web/playurl"
         static let bangumiSeason = "https://bangumi.bilibili.com/view/web_api/season"
         static let userEpisodeInfo = "https://api.bilibili.com/pgc/season/episode/web/info"
+        static let danmuWebView = "https://api.bilibili.com/x/v2/dm/web/view"
+        static let danmuList = "https://api.bilibili.com/x/v2/dm/list/seg.so"
+//        static let spi = "https://api.bilibili.com/x/frontend/finger/spi"
     }
 
     static func requestData(method: HTTPMethod = .get,
@@ -148,6 +152,36 @@ enum WebRequest {
         }
     }
 
+    static func requestIndex() {
+        requestData(url: "https://www.bilibili.com", complete: {
+            _ in
+            CookieHandler.shared.backupCookies()
+        })
+    }
+
+    static func requestPB<T: SwiftProtobuf.Message>(method: HTTPMethod = .get,
+                                                    url: URLConvertible,
+                                                    parameters: Parameters = [:],
+                                                    headers: [String: String]? = nil,
+                                                    noCookie: Bool = false,
+                                                    complete: ((Result<T, RequestError>) -> Void)? = nil)
+    {
+        requestData(method: method, url: url, parameters: parameters, headers: headers, noCookie: noCookie) { response in
+            switch response {
+            case let .success(data):
+                do {
+                    let protobufObject = try T(serializedData: data)
+                    complete?(.success(protobufObject))
+                } catch let err {
+                    Logger.warn("Protobuf parsing error: \(err.localizedDescription)")
+                    complete?(.failure(.decodeFail(message: "probobuf decode error: \(err)")))
+                }
+            case let .failure(err):
+                complete?(.failure(err))
+            }
+        }
+    }
+
     static func requestJSON(method: HTTPMethod = .get,
                             url: URLConvertible,
                             parameters: Parameters = [:],
@@ -180,13 +214,33 @@ enum WebRequest {
             }
         }
     }
+
+    static func requestPB<T: SwiftProtobuf.Message>(method: HTTPMethod = .get,
+                                                    url: URLConvertible,
+                                                    parameters: Parameters = [:],
+                                                    headers: [String: String]? = nil,
+                                                    noCookie: Bool = false,
+                                                    dataObj _: String = "data") async throws -> T
+    {
+        return try await withCheckedThrowingContinuation { configure in
+            requestPB(method: method, url: url, parameters: parameters, headers: headers, noCookie: noCookie) {
+                (res: Result<T, RequestError>) in
+                switch res {
+                case let .success(content):
+                    configure.resume(returning: content)
+                case let .failure(err):
+                    configure.resume(throwing: err)
+                }
+            }
+        }
+    }
 }
 
 // MARK: - Video
 
 extension WebRequest {
     static func requestBangumiInfo(epid: Int) async throws -> BangumiInfo {
-        let info: BangumiInfo = try await request(url: "http://api.bilibili.com/pgc/view/web/season", parameters: ["ep_id": epid], dataObj: "result")
+        let info: BangumiInfo = try await request(url: "https://api.bilibili.com/pgc/view/web/season", parameters: ["ep_id": epid], dataObj: "result")
         return info
     }
 
@@ -210,7 +264,7 @@ extension WebRequest {
     }
 
     static func requestHistory(complete: (([HistoryData]) -> Void)?) {
-        request(url: "http://api.bilibili.com/x/v2/history") {
+        request(url: "https://api.bilibili.com/x/v2/history") {
             (result: Result<[HistoryData], RequestError>) in
             if let data = try? result.get() {
                 complete?(data)
@@ -232,7 +286,7 @@ extension WebRequest {
     }
 
     static func requestDetailVideo(aid: Int) async throws -> VideoDetail {
-        try await request(url: "http://api.bilibili.com/x/web-interface/view/detail", parameters: ["aid": aid])
+        try await request(url: "https://api.bilibili.com/x/web-interface/view/detail", parameters: ["aid": aid])
     }
 
     static func requestFavVideosList() async throws -> [FavListData] {
@@ -290,7 +344,7 @@ extension WebRequest {
     }
 
     static func requestCoinStatus(aid: Int, complete: ((Int) -> Void)?) {
-        requestJSON(url: "http://api.bilibili.com/x/web-interface/archive/coins", parameters: ["aid": aid]) {
+        requestJSON(url: "https://api.bilibili.com/x/web-interface/archive/coins", parameters: ["aid": aid]) {
             response in
             switch response {
             case let .success(data):
@@ -302,7 +356,7 @@ extension WebRequest {
     }
 
     static func requestTodayCoins(complete: ((Int) -> Void)?) {
-        requestData(url: "http://www.bilibili.com/plus/account/exp.php") {
+        requestData(url: "https://www.bilibili.com/plus/account/exp.php") {
             response in
             switch response {
             case let .success(data):
@@ -315,11 +369,11 @@ extension WebRequest {
     }
 
     static func requestFavorite(aid: Int, mid: Int) {
-        requestJSON(method: .post, url: "http://api.bilibili.com/x/v3/fav/resource/deal", parameters: ["rid": aid, "type": 2, "add_media_ids": mid])
+        requestJSON(method: .post, url: "https://api.bilibili.com/x/v3/fav/resource/deal", parameters: ["rid": aid, "type": 2, "add_media_ids": mid])
     }
 
     static func requestFavoriteStatus(aid: Int, complete: ((Bool) -> Void)?) {
-        requestJSON(url: "http://api.bilibili.com/x/v2/fav/video/favoured", parameters: ["aid": aid]) {
+        requestJSON(url: "https://api.bilibili.com/x/v2/fav/video/favoured", parameters: ["aid": aid]) {
             response in
             switch response {
             case let .success(data):
@@ -370,7 +424,7 @@ extension WebRequest {
     }
 
     static func requestReplys(aid: Int, complete: ((Replys) -> Void)?) {
-        request(url: "http://api.bilibili.com/x/v2/reply", parameters: ["type": 1, "oid": aid, "sort": 1, "nohot": 0]) {
+        request(url: "https://api.bilibili.com/x/v2/reply", parameters: ["type": 1, "oid": aid, "sort": 1, "nohot": 0]) {
             (result: Result<Replys, RequestError>) in
             if let details = try? result.get() {
                 complete?(details)
@@ -390,6 +444,14 @@ extension WebRequest {
         let res = try await requestJSON(url: "https://api.bilibili.com/x/player/pagelist?aid=\(aid)&jsonp=jsonp")
         let cid = res[0]["cid"].intValue
         return cid
+    }
+
+    static func requestDanmuWebView(cid: Int) async throws -> DmWebViewReply {
+        try await requestPB(url: EndPoint.danmuWebView, parameters: ["type": 1, "oid": cid])
+    }
+
+    static func requestDanmuList(cid: Int, segmentIdx: Int) async throws -> DmSegMobileReply {
+        try await requestPB(url: EndPoint.danmuList, parameters: ["type": 1, "oid": cid, "segment_index": segmentIdx])
     }
 }
 
@@ -415,7 +477,7 @@ extension WebRequest {
     }
 
     static func requestLoginInfo(complete: ((Result<JSON, RequestError>) -> Void)?) {
-        requestJSON(url: "http://api.bilibili.com/x/web-interface/nav", complete: complete)
+        requestJSON(url: "https://api.bilibili.com/x/web-interface/nav", complete: complete)
     }
 }
 
@@ -622,7 +684,7 @@ struct BangumiSeasonView: Codable, Hashable {
         let bvid: String?
         let duration: Int
         let cover: URL
-        let index_title: String
+        let index_title: String?
         let index: String
         let pub_real_time: String
         let section_type: Int

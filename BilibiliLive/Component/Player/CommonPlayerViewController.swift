@@ -132,7 +132,7 @@ class CommonPlayerViewController: AVPlayerViewController {
         playerItem?.externalMetadata = meta
 
         if let pic = pic {
-            let resource = ImageResource(downloadURL: pic)
+            let resource = Kingfisher.ImageResource(downloadURL: pic)
             KingfisherManager.shared.retrieveImage(with: resource) {
                 [weak self] result in
                 guard let self = self,
@@ -172,6 +172,15 @@ class CommonPlayerViewController: AVPlayerViewController {
         }
         menus.append(danmuAction)
 
+        let danmuDurationMenu = UIMenu(title: "弹幕展示时长", options: [.displayInline, .singleSelection], children: [4, 6, 8].map { dur in
+            UIAction(title: "\(dur) 秒", state: dur == Settings.danmuDuration ? .on : .off) { _ in Settings.danmuDuration = dur }
+        })
+        let danmuAILevelMenu = UIMenu(title: "弹幕屏蔽等级", options: [.displayInline, .singleSelection], children: [Int32](1...10).map { level in
+            UIAction(title: "\(level)", state: level == Settings.danmuAILevel ? .on : .off) { _ in Settings.danmuAILevel = level }
+        })
+        let danmuSettingMenu = UIMenu(title: "弹幕设置", image: UIImage(systemName: "keyboard.badge.ellipsis"), children: [danmuDurationMenu, danmuAILevelMenu])
+        menus.append(danmuSettingMenu)
+
         let debugEnableImage = UIImage(systemName: "terminal.fill")
         let debugDisableImage = UIImage(systemName: "terminal")
         let debugAction = UIAction(title: "Debug", image: debugEnable ? debugEnableImage : debugDisableImage) {
@@ -198,17 +207,10 @@ class CommonPlayerViewController: AVPlayerViewController {
                 Settings.loopPlay = action.state == .on
             }
 
-            let playSpeedArray = [PlaySpeed(name: "0.5X", value: 0.5),
-                                  PlaySpeed(name: "0.75X", value: 0.75),
-                                  PlaySpeed(name: "1X", value: 1),
-                                  PlaySpeed(name: "1.25X", value: 1.25),
-                                  PlaySpeed(name: "1.5X", value: 1.5),
-                                  PlaySpeed(name: "2X", value: 2)]
-
-            let speedActions = playSpeedArray.map { playSpeed in
-                UIAction(title: playSpeed.name, state: player?.rate ?? 1 == playSpeed.value ? .on : .off) { [weak self] action in
+            let speedActions = PlaySpeed.blDefaults.map { playSpeed in
+                UIAction(title: playSpeed.name, state: player?.rate ?? 1 == playSpeed.value ? .on : .off) { [weak self] _ in
                     self?.player?.currentItem?.audioTimePitchAlgorithm = .timeDomain
-                    self?.player?.rate = playSpeed.value
+                    self?.selectSpeed(AVPlaybackSpeed(rate: playSpeed.value, localizedName: playSpeed.name))
                     self?.danMuView.playingSpeed = playSpeed.value
                 }
             }
@@ -285,7 +287,7 @@ class CommonPlayerViewController: AVPlayerViewController {
     private func fetchDebugInfo() -> String {
         let bitrateStr: (Double) -> String = {
             bit in
-            return String(format: "%.2fMbps", bit / 1024.0 / 1024.0)
+            String(format: "%.2fMbps", bit / 1024.0 / 1024.0)
         }
 
         guard let log = player?.currentItem?.accessLog() else { return "no log" }
@@ -374,7 +376,7 @@ extension CommonPlayerViewController: AVPlayerViewControllerDelegate {
         return false
     }
 
-    @objc func playerViewControllerShouldAutomaticallyDismissAtPictureInPictureStart(_ playerViewController: AVPlayerViewController) -> Bool {
+    @objc func playerViewControllerShouldAutomaticallyDismissAtPictureInPictureStart(_: AVPlayerViewController) -> Bool {
         return true
     }
 
@@ -401,4 +403,15 @@ extension CommonPlayerViewController: AVPlayerViewControllerDelegate {
 struct PlaySpeed {
     var name: String
     var value: Float
+}
+
+extension PlaySpeed {
+    static let blDefaults = [
+        PlaySpeed(name: "0.5X", value: 0.5),
+        PlaySpeed(name: "0.75X", value: 0.75),
+        PlaySpeed(name: "1X", value: 1),
+        PlaySpeed(name: "1.25X", value: 1.25),
+        PlaySpeed(name: "1.5X", value: 1.5),
+        PlaySpeed(name: "2X", value: 2),
+    ]
 }

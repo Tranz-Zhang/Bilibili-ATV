@@ -33,11 +33,17 @@ enum Settings {
     @UserDefaultCodable("Settings.danmuSize", defaultValue: .size_36)
     static var danmuSize: DanmuSize
 
+    @UserDefaultCodable("Settings.danmuAILevel", defaultValue: 1)
+    static var danmuAILevel: Int32
+
+    @UserDefaultCodable("Settings.danmuDuration", defaultValue: 8)
+    static var danmuDuration: Double
+
     @UserDefault("Settings.losslessAudio", defaultValue: false)
     static var losslessAudio: Bool
 
-    @UserDefault("Settings.preferHevc", defaultValue: false)
-    static var preferHevc: Bool
+    @UserDefault("Settings.preferAvc", defaultValue: false)
+    static var preferAvc: Bool
 
     @UserDefault("Settings.defaultDanmuStatus", defaultValue: true)
     static var defaultDanmuStatus: Bool
@@ -53,6 +59,9 @@ enum Settings {
 
     @UserDefault("Settings.contentMatch", defaultValue: true)
     static var contentMatch: Bool
+
+    @UserDefault("Settings.contentMatchOnlyInHDR", defaultValue: true)
+    static var contentMatchOnlyInHDR: Bool
 
     @UserDefault("Settings.continuePlay", defaultValue: true)
     static var continuePlay: Bool

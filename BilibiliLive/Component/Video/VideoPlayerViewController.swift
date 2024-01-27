@@ -94,9 +94,7 @@ class VideoPlayerViewController: CommonPlayerViewController {
             }
         }
         await fetchVideoData()
-        danmuProvider.reset()
-        danmuProvider.cid = playInfo.cid
-        danmuProvider.fetchDanmuData()
+        await danmuProvider.initVideo(cid: playInfo.cid, startPos: playerStartPos ?? 0)
     }
 
     private func playmedia(urlInfo: VideoPlayURLInfo, playerInfo: PlayerInfo?) async {
@@ -108,6 +106,11 @@ class VideoPlayerViewController: CommonPlayerViewController {
         let asset = AVURLAsset(url: playURL, options: ["AVURLAssetHTTPHeaderFieldsKey": headers])
         playerDelegate = BilibiliVideoResourceLoaderDelegate()
         playerDelegate?.setBilibili(info: urlInfo, subtitles: playerInfo?.subtitle?.subtitles ?? [], aid: playInfo.aid)
+        if Settings.contentMatchOnlyInHDR {
+            if playerDelegate?.isHDR != true {
+                appliesPreferredDisplayCriteriaAutomatically = false
+            }
+        }
         asset.resourceLoader.setDelegate(playerDelegate, queue: DispatchQueue(label: "loader"))
         let requestedKeys = ["playable"]
         await asset.loadValues(forKeys: requestedKeys)
@@ -194,7 +197,7 @@ class VideoPlayerViewController: CommonPlayerViewController {
         let cmEndTime = CMTimeMakeWithSeconds(viewPoint.to, preferredTimescale: timescale)
         let timeRange = CMTimeRangeFromTimeToTime(start: cmStartTime, end: cmEndTime)
         if let pic = viewPoint.imgUrl?.addSchemeIfNeed() {
-            let resource = ImageResource(downloadURL: pic)
+            let resource = Kingfisher.ImageResource(downloadURL: pic)
             KingfisherManager.shared.retrieveImage(with: resource) {
                 [weak self] result in
                 guard let self = self,
@@ -288,6 +291,8 @@ extension VideoPlayerViewController {
         let info = try? await WebRequest.requestPlayerInfo(aid: aid, cid: cid)
         if info?.last_play_cid == cid, let startTime = info?.playTimeInSecond, playData.dash.duration - startTime > 5, Settings.continuePlay {
             playerStartPos = startTime
+        } else {
+            playerStartPos = 0
         }
 
         await playmedia(urlInfo: playData, playerInfo: info)
@@ -306,7 +311,7 @@ extension VideoPlayerViewController {
 
         if data == nil {
             if let epi = season.episodes.first(where: { $0.ep_id == epid }) {
-                setPlayerInfo(title: epi.index + " " + epi.index_title, subTitle: season.up_info.uname, desp: season.evaluate, pic: epi.cover)
+                setPlayerInfo(title: epi.index + " " + (epi.index_title ?? ""), subTitle: season.up_info.uname, desp: season.evaluate, pic: epi.cover)
             }
         } else {
             setPlayerInfo(title: data?.title, subTitle: data?.ownerName, desp: data?.View.desc, pic: data?.pic)
@@ -377,9 +382,10 @@ extension VideoPlayerViewController {
         }
 
         playerItem = AVPlayerItem(asset: asset)
-        player = AVPlayer(playerItem: playerItem)
-        player?.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: 1), queue: .main) { [weak self] time in
+        let player = AVPlayer(playerItem: playerItem)
+        player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: 1), queue: .main) { [weak self] time in
             guard let self else { return }
+            if self.danMuView.isHidden { return }
             let seconds = time.seconds
             self.danmuProvider.playerTimeChange(time: seconds)
 
@@ -414,6 +420,14 @@ extension VideoPlayerViewController {
                     self.contextualActions = []
                 }
             }
+        }
+        if let defaultRate = self.player?.defaultRate,
+           let speed = PlaySpeed.blDefaults.first(where: { $0.value == defaultRate })
+        {
+            self.player = player
+            selectSpeed(AVPlaybackSpeed(rate: speed.value, localizedName: speed.name))
+        } else {
+            self.player = player
         }
     }
 }

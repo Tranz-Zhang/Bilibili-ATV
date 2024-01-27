@@ -135,9 +135,9 @@ class SettingsViewController: UIViewController {
         }
         cellModels.append(losslessAudio)
 
-        let hevc = CellModel(title: "Hevc优先", desp: Settings.preferHevc ? "开" : "关") {
+        let hevc = CellModel(title: "Avc优先(卡顿尝试开启)", desp: Settings.preferAvc ? "开" : "关") {
             [weak self] in
-            Settings.preferHevc.toggle()
+            Settings.preferAvc.toggle()
             self?.setupData()
         }
         cellModels.append(hevc)
@@ -174,6 +174,13 @@ class SettingsViewController: UIViewController {
             self?.setupData()
         }
         cellModels.append(match)
+
+        let matchHdrOnly = CellModel(title: "仅在HDR视频匹配视频内容", desp: Settings.contentMatchOnlyInHDR ? "开" : "关") {
+            [weak self] in
+            Settings.contentMatchOnlyInHDR.toggle()
+            self?.setupData()
+        }
+        cellModels.append(matchHdrOnly)
 
         let areaLimitUnlock = CellModel(title: "解锁港澳台番剧限制", desp: Settings.areaLimitUnlock ? "开" : "关") {
             [weak self] in

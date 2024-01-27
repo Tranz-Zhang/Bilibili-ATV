@@ -32,7 +32,7 @@ class FollowsViewController: StandardVideoCollectionViewController<FeedData> {
 
 extension WebRequest {
     static func requestFollowsFeed(page: Int) async throws -> [FeedData] {
-        return try await request(url: "https://api.bilibili.com/x/web-feed/feed", parameters: ["ps": 40, "pn": page])
+        return try await request(url: "https://api.bilibili.com/x/web-feed/feed", parameters: ["ps": 30, "pn": page])
     }
 }
 
@@ -43,7 +43,7 @@ struct FeedData: Decodable, PlayableData {
         let cover: URL
         struct EP: Decodable, Hashable {
             let index: String
-            let index_title: String
+            let index_title: String?
             let episode_id: Int
         }
 

@@ -330,6 +330,17 @@ class VideoDetailViewController: UIViewController {
         }
 
         recommandCollectionView.reloadData()
+
+        // update video player provider
+        if let player = presentedViewController as? VideoPlayerViewController {
+            if pages.count > 0, let index = pages.firstIndex(where: { $0.cid == cid }) {
+                let seq = pages.dropFirst(index).map({ PlayInfo(aid: aid, cid: $0.cid, epid: $0.epid, isBangumi: isBangumi) })
+                if seq.count > 0 {
+                    let nextProvider = VideoNextProvider(seq: seq)
+                    player.nextProvider = nextProvider
+                }
+            }
+        }
     }
 
     @IBAction func actionShowUpSpace(_ sender: Any) {

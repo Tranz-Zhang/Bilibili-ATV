@@ -143,7 +143,7 @@ extension LiveDanMuProvider {
 // MARK: WebSocketDelegate
 
 extension LiveDanMuProvider: WebSocketDelegate {
-    func didReceive(event: WebSocketEvent, client: WebSocket) {
+    func didReceive(event: Starscream.WebSocketEvent, client: Starscream.WebSocketClient) {
         switch event {
         case .connected:
             Logger.info("websocket connected")

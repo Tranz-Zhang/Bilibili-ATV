@@ -5,6 +5,7 @@
 //  Created by ByteDance on 2024/2/7.
 //
 
+import Kingfisher
 import UIKit
 
 class FeedsBigPosterCell: FeedsBaseCell, FeedsCellDataUpdateProtocol {
@@ -27,7 +28,7 @@ class FeedsBigPosterCell: FeedsBaseCell, FeedsCellDataUpdateProtocol {
 
         /// create group
         let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(960),
-                                               heightDimension: .absolute(640))
+                                               heightDimension: .absolute(600))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
 
         // create section
@@ -38,10 +39,10 @@ class FeedsBigPosterCell: FeedsBaseCell, FeedsCellDataUpdateProtocol {
     }
 
     func updateData(_ item: FeedsItem) {
-//        self.coverView.image = ...
+        coverView.kf.setImage(with: item.coverURL)
         titleLabel.text = item.title
         durationLabel.text = String.durationString(item.videoDuration)
-//        self.creatorAvatarView.image = ...
+        creatorAvatarView.kf.setImage(with: item.creatorAvatarURL)
         creatorNameLabel.text = item.creatorName
         FeedsBaseCell.setupTags(item.tags, toView: tagsView)
     }
@@ -49,7 +50,10 @@ class FeedsBigPosterCell: FeedsBaseCell, FeedsCellDataUpdateProtocol {
     override func awakeFromNib() {
         super.awakeFromNib()
         cornerRadius = 20
+        coverView.layer.cornerCurve = .continuous
         coverView.layer.cornerRadius = 20
+        creatorAvatarView.layer.cornerCurve = .circular
+        creatorAvatarView.layer.cornerRadius = creatorAvatarView.frame.size.height / 2
     }
 
     // MARK: parallax setup

@@ -36,12 +36,14 @@ class FeedsStandardCell: FeedsBaseCell, FeedsCellDataUpdateProtocol {
 
     func updateData(_ item: FeedsItem) {
         titleLabel.text = item.title
+        coverView.kf.setImage(with: item.coverURL)
         durationLabel.text = String.durationString(item.videoDuration)
     }
 
     override func awakeFromNib() {
         super.awakeFromNib()
         cornerRadius = 20
+        coverView.layer.cornerCurve = .continuous
         coverView.layer.cornerRadius = 20
     }
 

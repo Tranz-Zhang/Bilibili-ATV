@@ -609,10 +609,10 @@
 		8BE5FE392B7E1C28003122AA /* Network */ = {
 			isa = PBXGroup;
 			children = (
-				8BE5FE2F2B7E19D7003122AA /* RecommendedFeedsRequest.swift */,
 				8BE5FE302B7E19D7003122AA /* FollowFeedsRequest.swift */,
-				8BE5FE312B7E19D7003122AA /* RankingFeedsRequest.swift */,
 				8BE5FE332B7E19D7003122AA /* PopularFeedsRequest.swift */,
+				8BE5FE2F2B7E19D7003122AA /* RecommendedFeedsRequest.swift */,
+				8BE5FE312B7E19D7003122AA /* RankingFeedsRequest.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -620,10 +620,10 @@
 		8BE5FE3A2B7E1C42003122AA /* MainFeeds */ = {
 			isa = PBXGroup;
 			children = (
-				8BE5FE3B2B7E1C42003122AA /* MainFeedsViewController.swift */,
-				8BE5FE322B7E19D7003122AA /* FeedsManager.swift */,
-				8BE5FE3C2B7E1C42003122AA /* FeedsCells */,
 				8BE5FE462B7E1C42003122AA /* FeedsDefines.swift */,
+				8BE5FE322B7E19D7003122AA /* FeedsManager.swift */,
+				8BE5FE3B2B7E1C42003122AA /* MainFeedsViewController.swift */,
+				8BE5FE3C2B7E1C42003122AA /* FeedsCells */,
 			);
 			path = MainFeeds;
 			sourceTree = "<group>";
@@ -1354,7 +1354,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
 			requirement = {
-				kind = upToNextMajorVersion;
+				kind = versionRange;
+				maximumVersion = 8.0.0;
 				minimumVersion = 6.2.1;
 			};
 		};

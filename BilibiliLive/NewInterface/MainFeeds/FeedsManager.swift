@@ -12,32 +12,55 @@ import Foundation
  关注、推荐、热门、排行榜x10
  */
 
+protocol FeedsManagerDelegate: AnyObject {
+    func feedManager(_ manager: FeedsManager, didUpdateGroup group: FeedsGroup, atIndex updatedIndex: Int)
+}
+
 class FeedsManager {
+    // feeds loading
     private var loadingCategories: [FeedsCategory] = []
     private var feedsGroupList: [FeedsGroup] = []
+    var allFeeds: [FeedsGroup] { return feedsGroupList }
+    // feed cache
+    var cacheFolderPath: String?
+    let jsonEncoder = JSONEncoder()
+    // delegate
+    weak var delegate: FeedsManagerDelegate?
 
-    static let shared = FeedsManager()
-    private init() {
+    init() {
+        setupCacheDirectory()
         setupData()
     }
 
     private func setupData() {
-        var list: [FeedsGroup] = []
-        for category in allCategories() {
-            let groupName = groupNameWithCategory(category)
-            let itemList = [FeedsItem.emptyItem(), FeedsItem.emptyItem(), FeedsItem.emptyItem()]
-            list.append(FeedsGroup(groupName: groupName, category: category, itemList: itemList))
+        if let localList = getCachedFeedsList() {
+            print("get local cache list: \(localList.count)")
+            feedsGroupList = localList
+
+        } else {
+            var list: [FeedsGroup] = []
+            for category in allCategories() {
+                let groupName = groupNameWithCategory(category)
+                let itemList = [FeedsItem.emptyItem(), FeedsItem.emptyItem(), FeedsItem.emptyItem()]
+                list.append(FeedsGroup(groupName: groupName, category: category, itemList: itemList))
+            }
+            feedsGroupList = list
         }
-        feedsGroupList = list
     }
 
     private func allCategories() -> [FeedsCategory] {
-        return [.Food]
+        return [.Follow, .Recommended, .Popular, .Food]
     }
 
     /// Update feeds for specific category
     @MainActor
-    func updateFeedsWithCategory(_ category: FeedsCategory) {}
+    func updateFeedsWithCategory(_ category: FeedsCategory) {
+        let categorySet = Set<FeedsCategory>(loadingCategories)
+        if !categorySet.contains(category) {
+            loadingCategories.append(category)
+            tryRequestNextCagetory()
+        }
+    }
 
     // Update all category feeds
     @MainActor
@@ -97,10 +120,16 @@ class FeedsManager {
         }
 
         let group = feedsGroupList[updatedIndex]
-        feedsGroupList[updatedIndex] = FeedsGroup(groupName: group.groupName,
-                                                  category: group.category,
-                                                  itemList: items ?? [])
-        // TODO: add update call back !!!
+        let updatedGroup = FeedsGroup(groupName: group.groupName,
+                                      category: group.category,
+                                      itemList: items ?? [])
+        feedsGroupList[updatedIndex] = updatedGroup
+
+        // add local cache
+        cacheFeedsList(feedsGroupList)
+
+        // notify update
+        delegate?.feedManager(self, didUpdateGroup: updatedGroup, atIndex: updatedIndex)
     }
 
     private func fetchFollowFeeds() async -> [FeedsItem]? {
@@ -230,6 +259,54 @@ class FeedsManager {
         case .Movie: return "电 影"
         case .TV: return "电视剧"
         default: return "Unknown"
+        }
+    }
+
+    // MARK: feeds cache
+
+    private func setupCacheDirectory() {
+        if cacheFolderPath != nil {
+            return
+        }
+
+        var cacheDirectory: String
+        if let directory = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).last {
+            cacheDirectory = directory
+        } else {
+            cacheDirectory = NSTemporaryDirectory()
+        }
+        cacheFolderPath = cacheDirectory.appending("/FeedsCache")
+    }
+
+    private func cacheFeedsList(_ feeds: [FeedsGroup]) {
+        guard let cacheFilePath = cacheFolderPath else {
+            print("Fail to cache feed list: null cache file path")
+            return
+        }
+
+        do {
+            let data = try jsonEncoder.encode(feeds)
+            try data.write(to: URL(filePath: cacheFilePath))
+
+        } catch {
+            print("Fail to cache feed list ERROR:\(error)")
+        }
+    }
+
+    private func getCachedFeedsList() -> [FeedsGroup]? {
+        guard let cacheFilePath = cacheFolderPath else {
+            print("Fail to get cached feed list: null cache file path")
+            return nil
+        }
+        do {
+            let data = try Data(contentsOf: URL(filePath: cacheFilePath))
+            let jsonDecoder = JSONDecoder()
+            let feedsGroupList = try jsonDecoder.decode([FeedsGroup].self, from: data)
+            return feedsGroupList
+
+        } catch {
+            print("Fail to get cached feed list ERROR:\(error)")
+            return nil
         }
     }
 }

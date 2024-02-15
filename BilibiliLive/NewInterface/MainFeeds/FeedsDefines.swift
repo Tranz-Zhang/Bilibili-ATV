@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-enum FeedsCategory: Int {
+enum FeedsCategory: Int, Codable {
     case Follow = -1 // 关注
     case Popular = -2 // 热门
     case Recommended = -3 // 推荐
@@ -33,7 +33,7 @@ enum FeedsCategory: Int {
     case TV = 11 // 电视剧(主分区)
 }
 
-enum FeedsDisplayStyle {
+enum FeedsDisplayStyle: Codable {
     case standard /// 标准样式，包含图片，标题，时长
     case detail /// 细节样式，包含图片，标题，时长，tags，作者信息
     case bigPoster /// 大画报样式，更大的尺寸，内容跟detail一致
@@ -41,7 +41,7 @@ enum FeedsDisplayStyle {
 }
 
 /// Feeds流元数据
-struct FeedsItem: Hashable {
+struct FeedsItem: Hashable, Codable {
     var coverURL: URL? /// 封面
     var title: String // 标题
     var videoDuration: Int // 视频时长
@@ -58,7 +58,7 @@ struct FeedsItem: Hashable {
 }
 
 /// Feeds组
-struct FeedsGroup {
+struct FeedsGroup: Codable {
     var groupName: String
     var category: FeedsCategory
     var itemList: [FeedsItem]
@@ -73,7 +73,14 @@ struct FeedsGroup {
     }
 
     private func displayStyleWithCategory(_ category: FeedsCategory) -> FeedsDisplayStyle {
-        return .standard
+        switch category {
+        case .Follow:
+            return .bigPoster
+        case .Recommended, .Popular:
+            return .detail
+        default:
+            return .standard
+        }
     }
 }
 

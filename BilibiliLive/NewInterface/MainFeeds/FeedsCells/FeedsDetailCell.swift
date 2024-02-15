@@ -5,6 +5,7 @@
 //  Created by Chance Zhang on 2024/2/6.
 //
 
+import Kingfisher
 import ParallaxView
 import UIKit
 
@@ -41,10 +42,10 @@ class FeedsDetailCell: FeedsBaseCell, FeedsCellDataUpdateProtocol {
     }
 
     func updateData(_ item: FeedsItem) {
-//        self.coverView.image = ...
+        coverView.kf.setImage(with: item.coverURL)
         titleLabel.text = item.title
         durationLabel.text = String.durationString(item.videoDuration)
-//        self.creatorAvatarView.image = ...
+        creatorAvatarView.kf.setImage(with: item.creatorAvatarURL)
         creatorNameLabel.text = item.creatorName
         FeedsBaseCell.setupTags(item.tags, toView: tagsView)
     }
@@ -52,7 +53,10 @@ class FeedsDetailCell: FeedsBaseCell, FeedsCellDataUpdateProtocol {
     override func awakeFromNib() {
         super.awakeFromNib()
         cornerRadius = 20
+        coverContainerView.layer.cornerCurve = .continuous
         coverContainerView.layer.cornerRadius = 20
+        creatorAvatarView.layer.cornerCurve = .circular
+        creatorAvatarView.layer.cornerRadius = creatorAvatarView.frame.size.height / 2
     }
 
     override func glowContainerView() -> UIView? {

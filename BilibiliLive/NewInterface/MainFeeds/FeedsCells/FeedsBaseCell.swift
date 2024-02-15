@@ -117,6 +117,9 @@ extension FeedsBaseCell {
 
 extension String {
     static func durationString(_ duration: Int) -> String {
+        if duration <= 0 {
+            return ""
+        }
         let minutes = Int(floor(Double(duration) / 60))
         let seconds = Int(duration) % 60
         return String(format: "%d:%02d", minutes, seconds)

@@ -7,37 +7,13 @@
 
 import UIKit
 
-// TODO:
-/// UI
-/// |
-/// Data
-/// - thumbnail
-/// - title
-/// - ownerName
-/// - ownerAvatar
-/// - tags
-/// - duration?
-/// - displayStyle
-/// - videoSchema?
-///
-/// UI样式
-///     - 关注
-///     - 推荐
-///     - 热门
-///     - 分类排行榜
-/// 数据结构
-/// 数据源Manager
-
 class MainFeedsViewController: UIViewController, UICollectionViewDelegate {
-    enum Section {
-        case main
-    }
-
     private var dataSource: UICollectionViewDiffableDataSource<String, FeedsItem>!
     private var collectionView: UICollectionView!
     private var lastFocusedCell: UICollectionViewCell?
     private var currentFocusedIndexPath: IndexPath?
     private var feedsGroupList: [FeedsGroup] = []
+    private var feedManager = FeedsManager()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,8 +31,12 @@ class MainFeedsViewController: UIViewController, UICollectionViewDelegate {
         setupSectionHeader(dataSource, collectionView)
 
         // update data source
-        feedsGroupList = createTestDataSource()
+        feedsGroupList = feedManager.allFeeds
         updateDataSource(feedsGroupList)
+
+        // update feeds
+        feedManager.delegate = self
+        feedManager.updateAllFeeds()
     }
 
     private func createLayout() -> UICollectionViewLayout {
@@ -171,15 +151,16 @@ class MainFeedsViewController: UIViewController, UICollectionViewDelegate {
                 itemList.append(item)
             }
 
-            var style = FeedsDisplayStyle.standard
+            var category: FeedsCategory = .Food
             if sectionIndex == 0 {
-                style = .bigPoster
-
-            } else if sectionIndex < 2 {
-                style = .detail
+                category = .Follow
+            } else if sectionIndex == 1 {
+                category = .Recommended
+            } else if sectionIndex == 2 {
+                category = .Popular
             }
 
-            groups.append(FeedsGroup(groupName: "Section Title \(sectionIndex)", category: .Recommended, itemList: itemList))
+            groups.append(FeedsGroup(groupName: "Section Title \(sectionIndex)", category: category, itemList: itemList))
         }
         return groups
     }
@@ -196,5 +177,12 @@ class MainFeedsViewController: UIViewController, UICollectionViewDelegate {
         var creatorAvatarURL = URL(string: "https://user-images.githubusercontent.com/522079/90506845-e8420580-e122-11ea-82ca-31087fc8486c.png")!
         var tags = [String((0..<3).map { _ in letters.randomElement()! })]
         return FeedsItem(coverURL: coverURL, title: title, videoDuration: videoDuration, creatorName: creatorName, creatorAvatarURL: creatorAvatarURL, tags: tags, videoSchema: "")
+    }
+}
+
+extension MainFeedsViewController: FeedsManagerDelegate {
+    func feedManager(_ manager: FeedsManager, didUpdateGroup group: FeedsGroup, atIndex updatedIndex: Int) {
+        feedsGroupList[updatedIndex] = group
+        updateDataSource(feedsGroupList)
     }
 }

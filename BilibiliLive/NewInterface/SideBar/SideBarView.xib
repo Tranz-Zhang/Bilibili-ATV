@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder.AppleTV.XIB" version="3.0" toolsVersion="22155" targetRuntime="AppleTV" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="appleTV" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clipsSubviews="YES" contentMode="scaleToFill" id="iN0-l3-epB" customClass="SideBarView" customModule="StudyAppleTVUI" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="340" height="858"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="e4c-yp-SNV">
+                    <rect key="frame" x="0.0" y="0.0" width="340" height="858"/>
+                    <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="KfC-g9-7N9">
+                        <rect key="frame" x="0.0" y="0.0" width="340" height="858"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    </view>
+                    <blurEffect style="regular"/>
+                </visualEffectView>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Llo-FR-8fa">
+                    <rect key="frame" x="0.0" y="0.0" width="340" height="858"/>
+                </imageView>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="oyp-vN-duy">
+                    <rect key="frame" x="25" y="90" width="290" height="738"/>
+                </stackView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="Pmt-tb-8Ig"/>
+            <constraints>
+                <constraint firstItem="Llo-FR-8fa" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="4St-hg-h6S"/>
+                <constraint firstItem="oyp-vN-duy" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="5Xd-VM-fKg"/>
+                <constraint firstItem="oyp-vN-duy" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" constant="-50" id="6Vu-8A-k3A"/>
+                <constraint firstItem="e4c-yp-SNV" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" id="GeP-dS-m2V"/>
+                <constraint firstItem="e4c-yp-SNV" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="Ig2-uZ-ziV"/>
+                <constraint firstItem="Pmt-tb-8Ig" firstAttribute="bottom" secondItem="oyp-vN-duy" secondAttribute="bottom" priority="100" constant="30" id="LS5-wF-neo"/>
+                <constraint firstItem="e4c-yp-SNV" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" id="MJT-HX-HrB"/>
+                <constraint firstItem="e4c-yp-SNV" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="ftz-N3-Oc9"/>
+                <constraint firstItem="Llo-FR-8fa" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" id="gUQ-8f-i7w"/>
+                <constraint firstItem="Llo-FR-8fa" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="iBs-M4-0ik"/>
+                <constraint firstItem="oyp-vN-duy" firstAttribute="top" secondItem="Pmt-tb-8Ig" secondAttribute="top" constant="30" id="ppz-a2-uUY"/>
+                <constraint firstItem="Llo-FR-8fa" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" id="rMQ-O2-Mtn"/>
+            </constraints>
+            <nil key="simulatedTopBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="boundaryImageView" destination="Llo-FR-8fa" id="xDs-61-vhO"/>
+                <outlet property="contentStackView" destination="oyp-vN-duy" id="vYY-KH-N4G"/>
+            </connections>
+            <point key="canvasLocation" x="-68" y="-146"/>
+        </view>
+    </objects>
+</document>

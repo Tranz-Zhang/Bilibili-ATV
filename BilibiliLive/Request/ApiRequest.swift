@@ -127,8 +127,10 @@ enum ApiRequest {
         requestJSON(url, method: method, parameters: parameters, auth: auth, encoding: encoding) { result in
             switch result {
             case let .success(data):
+                print(data)
                 do {
                     let data = try data["data"].rawData()
+                    printJsonData(data: data)
                     let object = try decoder.decode(T.self, from: data)
                     complete?(.success(object))
                 } catch let err {
@@ -151,6 +153,25 @@ enum ApiRequest {
         try await withCheckedThrowingContinuation { configure in
             request(url, method: method, parameters: parameters, auth: auth, encoding: encoding, decoder: decoder) { resp in
                 configure.resume(with: resp)
+            }
+        }
+    }
+
+    static func requestJSON(_ url: URLConvertible,
+                            method: HTTPMethod = .get,
+                            parameters: Parameters = [:],
+                            auth: Bool = true,
+                            encoding: ParameterEncoding = URLEncoding.default,
+                            decoder: JSONDecoder = JSONDecoder()) async throws -> JSON
+    {
+        return try await withCheckedThrowingContinuation { configure in
+            requestJSON(url, method: method, parameters: parameters, auth: auth, encoding: encoding) { result in
+                switch result {
+                case let .success(data):
+                    configure.resume(returning: data)
+                case let .failure(err):
+                    configure.resume(throwing: err)
+                }
             }
         }
     }
@@ -353,5 +374,15 @@ enum ApiRequest {
         }
         let resp: Resp = try await request("https://app.bilibili.com/x/v2/space/archive/cursor", parameters: param)
         return resp.item
+    }
+
+    private static func printJsonData(data: Data) {
+        // debug
+        do {
+            let jsonObject = try JSONSerialization.jsonObject(with: data)
+            print("\(self) decode json: \(jsonObject)")
+        } catch {
+            print("\(self) fail to decode json: \(error)")
+        }
     }
 }

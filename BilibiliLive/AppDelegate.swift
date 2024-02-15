@@ -29,7 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             } else {
                 ApiRequest.refreshToken()
             }
-            window?.rootViewController = BLTabBarViewController()
+            window?.rootViewController = RootViewController()
         } else {
             window?.rootViewController = LoginViewController.create()
         }

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder.AppleTV.XIB" version="3.0" toolsVersion="22154" targetRuntime="AppleTV" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder.AppleTV.XIB" version="3.0" toolsVersion="22155" targetRuntime="AppleTV" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="appleTV" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22130"/>
-        <capability name="Image references" minToolsVersion="12.0"/>
+        <deployment identifier="tvOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" id="Cts-fE-2YH" customClass="FeedsDetailCell" customModule="StudyAppleTVUI" customModuleProvider="target">
+        <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" id="Cts-fE-2YH" customClass="FeedsDetailCell" customModule="BilibiliLive" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="540" height="420"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -27,16 +27,19 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="55S-5a-gKb">
                                 <rect key="frame" x="0.0" y="232" width="540" height="88"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.89999997615814209" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="feed_item_info_mask" translatesAutoresizingMaskIntoConstraints="NO" id="gk2-d3-xId">
-                                        <rect key="frame" x="0.0" y="0.0" width="540" height="88"/>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="feed_item_info_mask_r" translatesAutoresizingMaskIntoConstraints="NO" id="gk2-d3-xId">
+                                        <rect key="frame" x="0.0" y="-108" width="540" height="196"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="196" id="8WC-8Y-eyC"/>
+                                        </constraints>
                                     </imageView>
                                     <stackView opaque="NO" contentMode="scaleToFill" alignment="bottom" translatesAutoresizingMaskIntoConstraints="NO" id="eH1-Rg-uj8">
                                         <rect key="frame" x="10" y="0.0" width="520" height="78"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="{title}" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jQR-Na-WQ7">
                                                 <rect key="frame" x="0.0" y="39" width="440" height="39"/>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="30"/>
+                                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="30"/>
                                                 <color key="textColor" name="FeedsTitleColor"/>
                                                 <nil key="highlightedColor"/>
                                                 <color key="shadowColor" white="0.14000000000000001" alpha="0.5" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -60,13 +63,25 @@
                                     <constraint firstItem="eH1-Rg-uj8" firstAttribute="width" secondItem="55S-5a-gKb" secondAttribute="width" constant="-20" id="Cpe-G4-EAB"/>
                                     <constraint firstAttribute="height" constant="88" id="Hvj-DE-ff7"/>
                                     <constraint firstItem="eH1-Rg-uj8" firstAttribute="height" secondItem="55S-5a-gKb" secondAttribute="height" constant="-10" id="Oby-UN-JcQ"/>
-                                    <constraint firstItem="gk2-d3-xId" firstAttribute="centerY" secondItem="55S-5a-gKb" secondAttribute="centerY" id="P76-Y7-jCE"/>
-                                    <constraint firstItem="gk2-d3-xId" firstAttribute="height" secondItem="55S-5a-gKb" secondAttribute="height" id="QTB-3o-8gz"/>
+                                    <constraint firstAttribute="bottom" secondItem="gk2-d3-xId" secondAttribute="bottom" id="UUD-nD-IsG"/>
                                     <constraint firstItem="gk2-d3-xId" firstAttribute="width" secondItem="55S-5a-gKb" secondAttribute="width" id="eTm-Il-aMr"/>
                                     <constraint firstItem="gk2-d3-xId" firstAttribute="centerX" secondItem="55S-5a-gKb" secondAttribute="centerX" id="otR-WZ-ssm"/>
                                     <constraint firstItem="eH1-Rg-uj8" firstAttribute="top" secondItem="55S-5a-gKb" secondAttribute="top" id="tY1-X0-7fV"/>
                                 </constraints>
                             </view>
+                            <button opaque="NO" userInteractionEnabled="NO" alpha="0.5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mEh-bl-RO0">
+                                <rect key="frame" x="442" y="10" width="88" height="38"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="60" id="3VB-bE-ePy"/>
+                                    <constraint firstAttribute="height" constant="38" id="ljc-p2-Wbg"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="22"/>
+                                <inset key="contentEdgeInsets" minX="20" minY="15" maxX="20" maxY="15"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Tags" backgroundImage="feed_item_tag_bg">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -75,7 +90,9 @@
                             <constraint firstAttribute="height" constant="320" id="JpF-Zk-YCM"/>
                             <constraint firstItem="AHx-4s-WFe" firstAttribute="centerY" secondItem="Zl1-Xd-KOS" secondAttribute="centerY" id="K8c-Qj-ktc"/>
                             <constraint firstItem="55S-5a-gKb" firstAttribute="centerX" secondItem="Zl1-Xd-KOS" secondAttribute="centerX" id="PGd-5k-IJd"/>
+                            <constraint firstItem="mEh-bl-RO0" firstAttribute="top" secondItem="AHx-4s-WFe" secondAttribute="top" constant="10" id="VAV-KE-AfH"/>
                             <constraint firstItem="55S-5a-gKb" firstAttribute="width" secondItem="Zl1-Xd-KOS" secondAttribute="width" id="aSm-fA-njx"/>
+                            <constraint firstItem="AHx-4s-WFe" firstAttribute="trailing" secondItem="mEh-bl-RO0" secondAttribute="trailing" constant="10" id="dYK-79-hNE"/>
                             <constraint firstItem="AHx-4s-WFe" firstAttribute="height" secondItem="Zl1-Xd-KOS" secondAttribute="height" id="p3p-FA-2vO"/>
                             <constraint firstAttribute="bottom" secondItem="55S-5a-gKb" secondAttribute="bottom" id="sqh-Cl-vpQ"/>
                         </constraints>
@@ -91,7 +108,7 @@
                         <rect key="frame" x="79" y="335" width="456" height="64"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="{Avatar Name}" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" enablesMarqueeWhenAncestorFocused="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bko-fH-KNr">
-                                <rect key="frame" x="0.0" y="8" width="194" height="48"/>
+                                <rect key="frame" x="0.0" y="8" width="456" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="YVc-dK-pr6"/>
                                     <constraint firstAttribute="width" relation="lessThanOrEqual" priority="500" constant="360" id="r4a-H0-Vce"/>
@@ -100,21 +117,6 @@
                                 <color key="textColor" name="FeedsTitleColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" userInteractionEnabled="NO" alpha="0.5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mEh-bl-RO0">
-                                <rect key="frame" x="337.5" y="13" width="118.5" height="38"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="80" id="3VB-bE-ePy"/>
-                                    <constraint firstAttribute="height" constant="38" id="ljc-p2-Wbg"/>
-                                </constraints>
-                                <inset key="contentEdgeInsets" minX="40" minY="20" maxX="40" maxY="20"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Tags" cornerStyle="large">
-                                    <imageReference key="image" image="play.fill" catalog="system" symbolScale="small"/>
-                                    <fontDescription key="titleFontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="24"/>
-                                    <directionalEdgeInsets key="contentInsets" top="0.0" leading="15" bottom="0.0" trailing="15"/>
-                                    <color key="baseForegroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    <color key="baseBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                </buttonConfiguration>
-                            </button>
                         </subviews>
                     </stackView>
                 </subviews>
@@ -146,12 +148,12 @@
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="feed_item_info_mask" width="3" height="98"/>
+        <image name="feed_item_info_mask_r" width="41" height="196"/>
+        <image name="feed_item_tag_bg" width="21" height="21"/>
         <image name="person.circle.fill" catalog="system" width="128" height="128"/>
-        <image name="play.fill" catalog="system" width="112" height="128"/>
         <image name="test_cover" width="640" height="400"/>
         <namedColor name="FeedsTitleColor">
-            <color red="1" green="1" blue="1" alpha="0.80000001192092896" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="1" blue="1" alpha="0.90000000000000002" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

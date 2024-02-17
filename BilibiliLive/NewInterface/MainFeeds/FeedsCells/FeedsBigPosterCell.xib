@@ -4,7 +4,6 @@
     <dependencies>
         <deployment identifier="tvOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
-        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -20,31 +19,35 @@
                 <subviews>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="test_cover" translatesAutoresizingMaskIntoConstraints="NO" id="k5B-D4-Fzx">
                         <rect key="frame" x="0.0" y="0.0" width="960" height="600"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </imageView>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZNU-xR-QMg">
                         <rect key="frame" x="0.0" y="472" width="960" height="128"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.89999997615814209" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="feed_item_info_mask" translatesAutoresizingMaskIntoConstraints="NO" id="iC1-8M-j3H">
-                                <rect key="frame" x="0.0" y="0.0" width="960" height="128"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="feed_item_info_mask_bigposter" translatesAutoresizingMaskIntoConstraints="NO" id="iC1-8M-j3H">
+                                <rect key="frame" x="0.0" y="-128" width="960" height="256"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="256" id="8WU-Ht-9zb"/>
+                                </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="{title}" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" enablesMarqueeWhenAncestorFocused="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Cef-3B-lOQ">
-                                <rect key="frame" x="10" y="0.0" width="940" height="45"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="35"/>
+                                <rect key="frame" x="10" y="0.0" width="940" height="49"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="38"/>
                                 <color key="textColor" name="FeedsTitleColor"/>
                                 <nil key="highlightedColor"/>
                                 <color key="shadowColor" white="0.14000000000000001" alpha="0.5" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <size key="shadowOffset" width="0.0" height="3"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="{Creator Name}" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zrA-H1-aUu">
-                                <rect key="frame" x="82" y="65.5" width="199" height="33"/>
+                                <rect key="frame" x="74" y="65.5" width="199" height="33"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="27"/>
                                 <color key="textColor" name="FeedsTitleColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person.circle.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="YM7-XS-Mb7">
-                                <rect key="frame" x="10" y="53.5" width="64" height="63"/>
+                                <rect key="frame" x="10" y="57.5" width="56" height="55"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="64" id="1Pu-QD-zuP"/>
+                                    <constraint firstAttribute="height" constant="56" id="1Pu-QD-zuP"/>
                                     <constraint firstAttribute="width" secondItem="YM7-XS-Mb7" secondAttribute="height" multiplier="1:1" id="3HC-Pa-Kho"/>
                                     <constraint firstAttribute="width" secondItem="YM7-XS-Mb7" secondAttribute="height" multiplier="1:1" id="AhC-dN-D0g"/>
                                 </constraints>
@@ -55,20 +58,18 @@
                                 <color key="textColor" name="FeedsTitleColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" userInteractionEnabled="NO" alpha="0.59999999999999998" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ELX-Ew-VIf">
-                                <rect key="frame" x="296" y="66" width="114.5" height="38"/>
+                            <button opaque="NO" userInteractionEnabled="NO" alpha="0.5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hnz-vN-vA3">
+                                <rect key="frame" x="288" y="63" width="88" height="38"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="38" id="BJP-Aa-UhK"/>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="80" id="TPu-nj-NmM"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="60" id="5UG-lo-bDZ"/>
+                                    <constraint firstAttribute="height" constant="38" id="mDL-ui-lbl"/>
                                 </constraints>
-                                <inset key="contentEdgeInsets" minX="40" minY="20" maxX="40" maxY="20"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Tags" cornerStyle="large">
-                                    <imageReference key="image" image="play.fill" catalog="system" symbolScale="small"/>
-                                    <fontDescription key="titleFontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="22"/>
-                                    <directionalEdgeInsets key="contentInsets" top="0.0" leading="15" bottom="0.0" trailing="15"/>
-                                    <color key="baseForegroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    <color key="baseBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                </buttonConfiguration>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="22"/>
+                                <inset key="contentEdgeInsets" minX="20" minY="15" maxX="20" maxY="15"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Tags" backgroundImage="feed_item_tag_bg">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -80,15 +81,14 @@
                             <constraint firstItem="YM7-XS-Mb7" firstAttribute="top" secondItem="Cef-3B-lOQ" secondAttribute="bottom" constant="8" symbolic="YES" id="El5-Bb-nEv"/>
                             <constraint firstItem="iC1-8M-j3H" firstAttribute="width" secondItem="ZNU-xR-QMg" secondAttribute="width" id="L01-vM-aSM"/>
                             <constraint firstItem="Cef-3B-lOQ" firstAttribute="top" secondItem="ZNU-xR-QMg" secondAttribute="top" id="Mca-AT-uIn"/>
+                            <constraint firstAttribute="bottom" secondItem="iC1-8M-j3H" secondAttribute="bottom" id="OOZ-RQ-RzP"/>
                             <constraint firstItem="zrA-H1-aUu" firstAttribute="leading" secondItem="YM7-XS-Mb7" secondAttribute="trailing" constant="8" symbolic="YES" id="Rgs-w7-e4a"/>
+                            <constraint firstItem="hnz-vN-vA3" firstAttribute="centerY" secondItem="zrA-H1-aUu" secondAttribute="centerY" id="RoM-bX-GWc"/>
                             <constraint firstAttribute="bottom" secondItem="C4O-uO-0lA" secondAttribute="bottom" constant="15" id="TNV-5J-EQn"/>
                             <constraint firstItem="YM7-XS-Mb7" firstAttribute="leading" secondItem="Cef-3B-lOQ" secondAttribute="leading" id="XTt-sR-Yhj"/>
+                            <constraint firstItem="hnz-vN-vA3" firstAttribute="leading" secondItem="zrA-H1-aUu" secondAttribute="trailing" constant="15" id="ZWm-yr-okP"/>
                             <constraint firstItem="iC1-8M-j3H" firstAttribute="centerX" secondItem="ZNU-xR-QMg" secondAttribute="centerX" id="dG1-vw-U6f"/>
-                            <constraint firstItem="ELX-Ew-VIf" firstAttribute="centerY" secondItem="YM7-XS-Mb7" secondAttribute="centerY" id="eqS-ww-g67"/>
                             <constraint firstItem="Cef-3B-lOQ" firstAttribute="leading" secondItem="ZNU-xR-QMg" secondAttribute="leading" constant="10" id="f7Q-nO-Seh"/>
-                            <constraint firstItem="iC1-8M-j3H" firstAttribute="centerY" secondItem="ZNU-xR-QMg" secondAttribute="centerY" id="uDJ-b8-uBq"/>
-                            <constraint firstItem="iC1-8M-j3H" firstAttribute="height" secondItem="ZNU-xR-QMg" secondAttribute="height" id="ujx-Xx-Md8"/>
-                            <constraint firstItem="ELX-Ew-VIf" firstAttribute="leading" secondItem="zrA-H1-aUu" secondAttribute="trailing" constant="15" id="yj4-cT-Vh7"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -109,19 +109,19 @@
                 <outlet property="creatorNameLabel" destination="zrA-H1-aUu" id="FIh-sn-3le"/>
                 <outlet property="durationLabel" destination="C4O-uO-0lA" id="wuV-eo-BpK"/>
                 <outlet property="infoPanelView" destination="ZNU-xR-QMg" id="aTc-wS-QVC"/>
-                <outlet property="tagsView" destination="ELX-Ew-VIf" id="x0A-C4-KG5"/>
+                <outlet property="tagsView" destination="hnz-vN-vA3" id="5z2-J0-Fcd"/>
                 <outlet property="titleLabel" destination="Cef-3B-lOQ" id="NaB-5R-ahB"/>
             </connections>
             <point key="canvasLocation" x="-142" y="-12"/>
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="feed_item_info_mask" width="3" height="98"/>
+        <image name="feed_item_info_mask_bigposter" width="41" height="256"/>
+        <image name="feed_item_tag_bg" width="21" height="21"/>
         <image name="person.circle.fill" catalog="system" width="128" height="128"/>
-        <image name="play.fill" catalog="system" width="112" height="128"/>
         <image name="test_cover" width="640" height="400"/>
         <namedColor name="FeedsTitleColor">
-            <color red="1" green="1" blue="1" alpha="0.80000001192092896" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="1" blue="1" alpha="0.90000000000000002" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>
